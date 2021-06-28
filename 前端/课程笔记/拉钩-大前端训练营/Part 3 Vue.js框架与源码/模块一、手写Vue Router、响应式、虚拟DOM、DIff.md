@@ -6,7 +6,7 @@ History和Hash路由的区别：
 - `Histroy`模式是基于`HTML5`中的`History API`
     -  history.pushState() IE 10以后支持 
     -  history.replaceState()
-
+    
 <h4>History模式</h4> 
 
 需要服务器的支持，在服务端应该`配置`除了静态资源外都返回`index.html` 
