@@ -66,7 +66,6 @@ class CounterStore {
 3. 实例化store
 
 ```js
-、、
 import CounterStore from '..'
 
 const counterStore = new CounterStore();
@@ -80,4 +79,16 @@ import counterStore from '..'
 const App = () => (
   <div onClick={counterStore.increment}>{counterStore.count}</div>
 )
+```
+
+5. 状态改变使视图更新
+
+```js
+import { observer } from 'mobx-react-lite';
+
+const App = () => {
+  ....
+}
+
+export default observer(App)
 ```
