@@ -92,3 +92,101 @@ const App = () => {
 
 export default observer(App)
 ```
+
+### 6. 增强使用
+
+1. 强制绑定action方法的this指向
+  ```js
+    export default class CounterStore {
+      constructor() {
+        makeObservable(this, {
+          // 强制绑定this
+          increment: action.bound
+        })
+      }
+    }
+  ```
+
+2. 创建RootStore实现全局共享
+  ```js
+    import { createContext, useContext } from 'react;
+
+    class RootStore {
+      constructor() {
+        // 这里初始化所有Store
+        this.counterStore = new CounterStore();
+      }
+    }
+
+    const rootStore = new RootStore();
+    const RootStoreContext = createContext();
+
+    // 提供顶层Context能力的包裹组件（App.jsx里使用）
+    export const RootStoreProvider = ({ children }) => (
+      <RootStoreContext.Provider value={rootStore}>
+        { children }
+      </RootStoreContext.Provider>
+    )
+    
+    // 获取RootStore的方法（组件使用）
+    export const useRootStore = () => useContext(RootStoreContext)
+  ```
+
+3. 异步action（副作用）
+
+```js
+  import { flow, makeObservable, observable } from 'mobx';
+
+  export default class TodoStore {
+    constructor() {
+      this.todos = [];
+      makeObservable(this, {
+        todos: observable
+        loadTodos: flow
+      })
+    }
+
+    *loadTodos() {
+      let res = yield axios.get("http://xxxxxxx);
+      this.todos = res.data;
+    }
+  }
+
+```
+
+4. 派生状态
+
+```js
+  import { computed, ... } from 'mobx';
+
+  export default class TodoStore { 
+    constructor() {
+      this.todos = [];
+      makeObservable(this, {
+        todos: observable,
+        computedTodosCount: computed
+      })
+    }
+    // 使用get声明
+    get computedTodosCount() {
+      return this.todos.length;
+    }
+  }
+```
+
+5. makeAutoObservable(taraget, overrides?, options?)
+   1. target：目标对象，this
+   2. overrides：覆盖默认设置，将target对象中的属性或者方法设置为普通属性，key为属性名。
+   3. options：配置对象，例 autoBind: true，自动绑定this
+```js
+  import { makeAutoObservable, ... } from 'mobx';
+
+  export default class TodoStore { 
+    constructor() {
+      // 传递this即可
+      // 自动将属性设置为`observable`  
+      // 自动将方法设置为`action`
+      makeAutoObservable(this);
+    }
+  }
+```
