@@ -2,14 +2,6 @@
 
 为了提高 React 渲染页面的效率，减少页面卡顿，提升用户体验。
 
-<img src="./images/01.gif" align="left"/>
-
-
-
-<img src="./images/02.gif" align="left"/>
-
-
-
 #### 2. 在 Fiber 出现之前 React 存在什么问题
 
 在 React 15 版本中采用的是 Virtual DOM 对比方案，通过对比 Virtual DOM 找出差异部分，从而只将差异部分更新到页面中，避免更新整体 DOM 以提高性能。
@@ -44,14 +36,7 @@
 
 核心就是递归比对的过程长期占用主线程产生了性能问题。
 
-<img src="./images/06.png" align="left"/>
-
-
-
-<video controls>
-  <source src="./video/Recursion.mp4" type="video/mp4">
-</video>
-
+<img src="./images/06.png" />
 
 #### 3. 虚拟 DOM 是如何被转换为真实 DOM 的
 
@@ -97,7 +82,7 @@ React 利用浏览器空闲时间执行比对任务， 解决了 React 执行比
 
 React 在执行完一个任务单元后，查看是否有其他的高优先级任务，如果有，放弃占用主线程，先执行优先级高的任务。
 
-<img src="./images/07.jpg" align="left"/>
+<img src="./images/07.jpg" />
 
 #### 5. 什么是 Fiber
 
@@ -109,12 +94,12 @@ React 在执行完一个任务单元后，查看是否有其他的高优先级�
 
    任务会在浏览器的空闲时间被执行，每个单元执行完成后，React 都会检查是否还有空余时间，如果有就交还主线程的控制权。
 
-   <img src="./images/05.png" align="left" width="60%"/>
+  <img src="./images/05.png" width="60%"/>
 
    1. 将任务拆分成了一个一个小的任务单元
    2. 闲时执行任务
 
-2. Fiber 是一种数据结构
+1. Fiber 是一种数据结构
 
    Fiber 是一种数据结构，支撑 Fiber 构建任务的运转。 
 
@@ -153,7 +138,7 @@ render 阶段：构建 Fiber 对象，构建链表，在链表中标记要执行
 
 commit 阶段：根据构建好的链表进行 DOM 操作，不可中断。
 
-<img src="./images/07.png" align="left"/>
+<img src="./images/07.png" />
 
 先从上向下走，构建节点对应的 Fiber 对象，然后再从下向上走，构建 Fiber 对象及链表。
 
@@ -311,7 +296,7 @@ requestIdleCallback(workLoop)
 
 1. 什么是链表
 
-   <img src="./images/12.png" align="left"/>
+   <img src="./images/12.png"/>
 
    通过链表可以按照顺序存储内容
 
@@ -319,7 +304,7 @@ requestIdleCallback(workLoop)
 
    链表的顺序是由 DOM 操作的顺序决定的，c1 是第一个要执行 DOM 操作的所以它是链的开始，A1 是最后一个被添加到 Root 中的元素，所以它是链的最后。
 
-   <img src="./images/09.png" align="left"/>
+   <img src="./images/09.png"/>
 
 3. 如何向链的尾部添加新元素？
 
@@ -339,8 +324,5 @@ requestIdleCallback(workLoop)
 
    其实是链头的不断上移做到的。
 
-   <img src="./images/10.png" align="left"/>
+   <img src="./images/10.png"/>
 
-   
-
-![联系方式](https://s.zceme.cn/fed/cover-h.jpg)
