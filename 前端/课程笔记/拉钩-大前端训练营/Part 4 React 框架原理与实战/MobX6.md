@@ -133,6 +133,7 @@ export default observer(App)
   ```
 
 3. 异步action（副作用）
+   flow是一种代替async、awiat的方式
 
 ```js
   import { flow, makeObservable, observable } from 'mobx';
@@ -190,3 +191,34 @@ export default observer(App)
     }
   }
 ```
+
+6. autoRun 数据监测
+  
+   1. Javascript对于基本数据类型，属于值传递。mobx只能跟踪到原始属性，跟踪不到复制后的值。
+   2. 对于引用数据类型，只要引用地址不发生变化，mobx就可以进行跟踪。
+
+```js
+
+  import { autoRun } from 'mobx';
+  import { useEffect } from 'react';
+
+  function Counter() {
+    const { counterStore }  = useRootState()
+
+    useEffect(() => {
+      // 在useEffect中进行autoRun初始化
+      autoRun(() => {
+        // mobx检测到counterStore.count变化后会执行这个函数
+        console.log(counterStore.count);
+      })
+    }, [])
+
+    return (
+      <div></div>
+    )
+  }
+
+```
+
+7. reaction 数据监测
+   与 autoRun 功能都是进行数据监测，但是reaction可以提供当前状态和上一个状态
