@@ -179,3 +179,51 @@ const App = () => (
 )
 
 ```
+
+#### 关键帧动画
+
+```jsx
+import { keyframes, css } from '@emotion/core';
+
+const move = keyframes`
+  0% { left: 0 }
+  100% { left: 100% }
+`
+const box = css`
+  animation: ${move} 2s ease infinite;
+`
+const App = () => {
+  return (<div css={box}></div>)
+}
+```
+
+#### 主题
+
+下载主题模块，引入组件 `ThemeProvider` 
+
+```jsx
+import { ThemeProvider } from 'emotion-theming';
+// 定义主题 App.jsx
+// ThemeProvider组件放置在所有组件最外层
+const theme = {
+  colors: {
+    primary: 'red'
+  }
+}
+const App = () => <ThemeProvider theme={theme}>其它组件</ThemeProvider>
+
+// 获取主题
+// 方式一，通过函数
+const getPrimaryColor = props => css`
+  color: ${props.colors.primary}
+`
+const Compponet = () => <div css={getPrimaryColor}></div>
+
+// 方式二，通过`useTheme`
+import { useTheme } from 'emotion-theming';
+
+const Compponet = () => {
+  const theme = useTheme();
+  return (<div css={{ color: theme.colors.primary }}></div>)
+}
+```
