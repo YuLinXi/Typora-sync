@@ -177,3 +177,85 @@ c.end('c')
 
 c.pipe(process.stdout); // ABC
 ```
+
+## 文件读写流
+
+### 可写流执行流程
+
+<img src="./assets/7.png" width="100%"/>
+
+```js
+const fs = require("fs");
+
+let ws = fs.createWriteStream('test.txt', {
+  highWaterMark: 3
+})
+let flag;
+
+flag = ws.write('1');      // true
+flag = ws.write('2');      // true
+flag = ws.write('3');      // false
+
+ws.on('drain', () => {
+  console.log('1)
+})
+```
+
+1. 第一次调用`write`方法时是将数据直接写入到文件中。
+2. 第二次调用`write`方法时将数据写入至缓存区中。
+3. **生产速度** 和 **消费速度**是不一样的，一般情况下生产比消费快得多。
+4. 当 `flag` 为 `false` 之后并不阻止当次数据写入。表明消费速度跟不上生产速度了，一般这个时候将刻度刘的模块修改为**暂停模式**。
+5. 当数据生产者暂停后，消费则会慢慢消费它内部缓存中的数据，直到可以再次被执行写入操作。
+6. 当缓冲区就可以继续写入数据时，通过`drain`事件通知生产者。
+
+
+### 控制写入速度
+
+**drain** 事件的使用，`pipe`管道的内部实现机制。
+
+```js
+const fs = require("fs");
+
+const ws = fs.createWriteStream("./test.txt", {
+  highWaterMark: 3,
+});
+
+const source = ["1", "2", "3", "4"];
+let num = 0;
+let flag = true;
+
+const executeWrite = () => {
+  while (num !== source.length && flag) {
+    flag = ws.write(source[num]);
+    num++;
+  }
+};
+
+ws.on("drain", () => {
+  flag = true;
+  executeWrite();
+});
+
+executeWrite();
+```
+
+## 背压机制
+
+即 **pipe** 实现原理。
+Nodejs的stream已实现 **背压机制**。
+
+### 数据读写问题
+
+```js
+const fs = require("fs");
+
+const rs = fs.createReadStream('./demo.txt', {
+  hightWaterMark: 4
+});
+
+const ws = fs.createWriteStream('./demo.cp.txt', {
+  hightWaterMark: 1
+});
+
+rs.pipe(ws);
+```
