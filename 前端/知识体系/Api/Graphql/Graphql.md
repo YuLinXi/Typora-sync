@@ -297,12 +297,16 @@ search(text: "an") {
 
 ### 输入类型（Input Types）
 
-定义输入对象
+定义输入参数对象
 
 ```
 input ReviewInput {
   stars: Int!
   commentary: String
+}
+
+type Mutation {
+  getStarts(params: ReviewInput) : ...	
 }
 ```
 
