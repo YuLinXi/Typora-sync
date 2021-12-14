@@ -31,7 +31,7 @@
 1. 拥有一个`manifest.json`配置文件，且该文件必须包含配置：`name`、`short_name`、`start_url`、`icons`。
 2. 拥有一个注册了的 `Service Worker`。
 3. 网络需要使用 `HTTPS`，**支持`localhost`调试**。
-4. 网站在同一浏览器中至少被访问过两次，且像个时间不少于五分钟。
+4. 网站在同一浏览器中至少被访问过两次，且相隔时间不少于五分钟。
 
 ## 2. Service Worker
 
@@ -50,7 +50,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 ```
-  
+
 - 注册成功仅仅表明指定脚本已成功解析，并不意味`Service Worker`已经安装或处于激活状态。
 - `scope`参数指定了 `Service Worker`可接受 `fetch`事件的作用域，比如`scope：'/mobile'`，则只能接受path以`/mobile`开头的fetch事件。
 默认为`sw.js`所在路径。
@@ -87,8 +87,7 @@ self.addEventListener('install', function(event) {
 - 安装完成后，不存在旧版本的 Service Worker 或无页面使用此版本。
 - 等待状态下正在运行旧版本 Service Worker 的页面被全部关闭。
 
-注：页面刷新或切换无法使 Service Worker 从等待进入激活状态，这是由于当页面刷新或切换时，
-浏览器需要等到新页面渲染完成之后才会销毁旧页面，即新旧两个页面存在共同的交叉时间
+注：页面刷新或切换无法使 Service Worker 从等待进入激活状态，这是由于当页面刷新或切换时，浏览器需要等到新页面渲染完成之后才会销毁旧页面，即新旧两个页面存在共同的交叉时间
 
 进入激活状态后，触发`activate`事件，在该下时间下通常进行对缓存更新或删除的操作：
 
@@ -208,16 +207,25 @@ navigator.serviceWorker.addEventListener('controllerchange', function() {
 
 因此，**Cookie方案淘汰**。
 
-1. LocalStorage 和 SessionStorage
+
+
+2. LocalStorage 和 SessionStorage
 
 HTML5引入的离线存储技术。
 
 1. 无法跨域访问。
+
 2. 存储数据格式单一。
+
 3. 接口同步访问。
+
 4. 存储空间相对于Cookie有所增加（一般为5MB）。
+
 5. 生命周期，`LocalStorage`为永久，`SessionStorage`则随着页面关闭而失效。
+
 6. 仅存在客户端，不参与服务端通信。
+
+   
 
 能够在 Web Worker 及 Service Worker 环境下访问：
 
@@ -262,8 +270,7 @@ HTMl5引入的离线存储技术。
 
 1. 注册
 
-利用 `registration.sync.register` 注册后台同步事件，
-并且借助`IndexedDB`将需要发送到服务端的数据缓存到本地。
+利用 `registration.sync.register` 注册后台同步事件，并且借助`IndexedDB`将需要发送到服务端的数据缓存到本地。
 
 注意：`registration.sync.register` 的参数是事件的唯一标识，浏览器可能会将多个同名的事件合为一个。
 
@@ -353,3 +360,97 @@ self.addEventListener('sync', function(event) {
 ## 5. 推送通知
 
 实现能力：在用户没有打开浏览器（或PWA应用），用户依旧能够收到通知内容，并通过点击通知进入应用进行处理。
+
+```
+    +-------+           +--------------+       +-------------+
+    |  UA   |           | Push Service |       | Application |
+    +-------+           +--------------+       |   Server    |
+        |                      |               +-------------+
+        |      Subscribe       |                      |
+        |--------------------->|                      |
+        |       Monitor        |                      |
+        |<====================>|                      |
+        |                      |                      |
+        |          Distribute Push Resource           |
+        |-------------------------------------------->|
+        |                      |                      |
+        :                      :                      :
+        |                      |     Push Message     |
+        |    Push Message      |<---------------------|
+        |<---------------------|                      |
+        |                      |                      |
+```
+
+UA：客户端。
+
+Push Service：一般由浏览器服务商提供，比如chrome和firefox自己的Push Service。
+
+Application Server：服务端，开发者自己提供。
+
+
+
+### 工作流程
+
+- Subscribe：浏览器通过询问方式让用户选择是否允许显示通知，如允许则向**Push Service** 发起订阅请求，订阅成功后返回 [PushSubscription](https://link.juejin.cn/?target=https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FWeb%2FAPI%2FPushSubscription) 对象。
+- Monitor：订阅成功后，Push Service 将保持与客户端的联系。
+- Distribute Push Resource：订阅成功后，客户端将 `PushSubscription` 对象中的验证信息发送给服务端，并在服务端进行保存。
+- Push Message：服务端推送的消息发给 Push Service，后者对消息进行校检后，再将消息推送给客户端。
+
+
+
+### 订阅通知
+
+客户端
+
+1. 注册  `Service Worker`
+2. 注册成功后，调用 `registration.pushManager.getSubscription`  方法来检测用户是否已经订阅。
+3. `registration.pushManager.subscribe` 方法订阅，接收参数选项：
+   1. userVisibleOnly：`Boolean`，必须为 `true`，表示返回的推送订阅将只能被用于对用户可见的消息。
+   2. applicationServerKey：`Uint8Array` ，服务端用来向客户端应用发送消息的**公钥**。借助 `web-push generate-vapid-keys`生成。
+4. 订阅成功后，将回调参数`subscription`发送到服务端储存。其主要数据格式：
+   1. endpoint：浏览器为每个订阅者生成的唯一 URL，以便 `Push Service` 指定用户推送。
+   2. expirationTime：订阅的有效时间，只读属性，一般为 `null`。
+   3. keys：用于加密消息数据，属性有 `auth`和`p256dh`。
+
+
+
+服务端
+
+1. 借助 `web-push`库实现，首先调用 `webpush.setVapidDetails` 方法来设置 `VAPID` 信息。
+2. 实现路由，`POST /subscribe` 将客户端上传的 `PushSubscription` 信息保存起来（借助数据库持久化）。
+
+
+
+###发送通知
+
+服务端
+
+1. 例如通过客户端的 `POST /push` 请求通过`webpush.sendNotification`来发送通知。
+
+
+
+客户端
+
+1. `self.addEventListener('push')`监听服务端推送消息，通过 `self.registration.showNotification` 方法显示通知弹窗。
+2. `self.addEventListener('notificationclick')`监听用户对于通知弹窗的点击触发事件，来做出不同的响应。
+
+
+
+### 取消订阅
+
+用户可以主动设置取消订阅，同时也可通过编码方式取消用户订阅。
+
+```js
+function unsubscribe() {
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    navigator.serviceWorker.ready.then(function(registration) {
+      registration.pushManager.getSubscription().then(function(subscription) {
+        if (subscription) {
+          subscription.unsubscribe();
+        }
+      }
+    });
+  }
+}
+```
+
