@@ -1,10 +1,206 @@
 # learntypescript.dev 学习笔记
 
+[参考]（https://learntypescript.dev/）
+
+
+
+## TYPE NARROWING 类型收窄
+
+一个变量可以从更少的精确类型到 **更精确** 的类型，这个过程叫做 **类型收窄**。
+
+
+
+### 类型断言
+
+```typescript
+// <> 语法
+const button = <HTMLButtonElement>document.querySelector(".go");
+
+// as 语法（推荐使用）
+const button = document.querySelector(".go") as HTMLButtonElement;
+```
+
+
+
+### `!`  non-null 非空断言 
+
+在严格模式下，typesctipy 会默认开启 `strictNullChecks`检查模式。
+
+```typescript
+text!.concat(text!)
+// 告诉typesctipyt obj 非`null`或`undefined`
+```
+
+
+
+### type guard  类型守卫
+
+`typeof` 是类型守卫中的其中一个。
+
+使用 `typeof` 的类型判断分支，typescript 会自动的进行类型推导。
+
+```typescript
+function double(item: string | number) {
+  if (typeof item === "string") {
+    return item.concat(item);  // 类型推导 item：string
+  } else {
+    return item + item;        // 类型推导 item：number
+  }
+}
+```
+
+
+
+同样的还有，`instanceof` 、`in` 
+
+
+
+#### type predicate 类型谓词
+
+使用类型谓词实现一个自定义类型守卫函数。
+
+类型谓词可以被用在函数的返回类型来表示表示的缩小类型参数。
+
+函数返回值只能是 `boolean`类型。
+
+```typescript
+function isPerson(contact: Contact): contact is Person {
+  return (contact as Person).firstName !== undefined;
+}
+```
+
+
+
+#### assertion signature 断言签名
+
+使用断言签名实现一个自定义类型守卫函数。
+
+断言签名可以用于一个函数的返回类型来表示的缩小类型参数。
+
+通过抛出异常来表示类型检查失败。
+
+```typescript
+function assertTypeName(
+  paramName: WideTypeName
+): asserts paramName is NarrowTypeName {
+  if (some_check) {
+    throw new Error("Assert failed");
+  }
+}
+```
+
+
+
+### discriminated union pattern 可辨识联合匹配
+
+**可辨识联合匹配**，可以用于收窄联合类型的方式。
+
+三个关键部分：
+
+1. 多个类型含有**一个公共属性**。
+
+   ```typescript
+   type Type1 = {
+     ...
+     commonName: "value1"
+   }
+   ...
+   type TypeN = {
+     ...
+     commonName: "valueN"
+   }
+   ```
+
+2. 如果一个类型是这**多个类型的联合类型**
+
+   ```typescript
+   type UnionType = Type1 | ... | TypeN
+   ```
+
+3. 通过这个公共属性来创造类型守卫。
+
+   ```typescript
+   function (param: UnionType) {
+     switch (param.commonName) {
+       case "value1":
+         // type narrowed to Type1
+         break;
+       case "valueN":
+         // type narrowed to TypeN
+         break;
+     }
+   }
+   ```
+
+
+
+TODO：https://learntypescript.dev/07/l8-discriminated-union
+
+
+
+## MAPPED TYPES 映射类型
+
+
+
+### keyof
+
+使用 `keyof` 操作符从对象中提取类型注释。
+
+```typescript
+type ContactDetails = { name: string; email: string, mobile: string };
+let keys: keyof ContactDetails = 'name';
+
+// keys === 'name' | 'email' | 'mobile'
+```
+
+
+
+### 创建一个映射类型
+
+映射类型是一个从已存在类型的类型信息创建一个新的类型的过程。
+
+```typescript
+// 映射类型含义伪代码
+type MappedTypeName = { [K in UnionType]: ExistingType };
+```
+
+
+
+### `-` 符号
+
+```typescript
+{
+  [K in keyof T]-?: TypeName
+}
+```
+
+使用  `-`  符号在 `?` 修饰符之前，表示如果存在，可选修饰符应该被删除。
+
+```typescript
+{
+  -readonly [K in keyof T]: TypeName
+}
+```
+
+使用`-` 符号在 `readonly`修饰符之前，将映射到一个可写属性。
+
+应用，实现一个 `Required` 工具类型
+
+```typescript
+type Required<T> = {
+  [P in keyof T]-?: T[P];
+};
+```
+
+
+
+### typeof
+
+
+
 
 
 ## CONDITIONAL TYPES 条件类型
-
-
 
 ### extends 
 
@@ -84,16 +280,63 @@ type ObjectWithoutKeys<T, K extends keyof T> = ObjectWithKeys<
 type ReadonlyType = Readonly<ExistingType>;
 ```
 
-注：只为对象属性进行浅包装（*shallow* readonly check）
+注：只为对象属性进行浅映射（*shallow* readonly check）
 
 
 
 ### Object.freeze
 
-使用 `Object.freeze` 包装的数据，TS会自动推到并为其使用 `Readonly ` 包装。
+使用 `Object.freeze` 包装的数据，TS会自动推到并为其使用 `Readonly ` 映射。
 
 
 
+### Deeply Immutable
+
+深度不可变类型
 
 
-TODO：https://learntypescript.dev/10/l5-deep-immutable
+
+#### 使用 const 断言
+
+```typescript
+let variableName = someValue as const;
+```
+
+1. 在编译时定义不可变类型。
+
+2. 应用到对象而言，使用 `const` 断言会为对象的每个属性 **递归地** 添加`readonly` 修饰符。
+
+3. 当`readonly`修饰符应用到数据类型，数组类型将被修复为固定元素的 **元祖** 类型。
+
+
+
+#### deepFreeze 函数
+
+1. 在运行时达到深度不可变的效果。
+2. 递归的为对象应用 `Object.freeze` 函数。
+
+```typescript
+function deepFreeze<T>(obj: T) {
+  var propNames = Object.getOwnPropertyNames(obj);
+  for (let name of propNames) {
+    let value = (obj as any)[name];
+    if (value && typeof value === "object") {
+      deepFreeze(value);
+    }
+  }
+  return Object.freeze(obj);
+}
+```
+
+
+
+#### 	DeepImmutable 类型
+
+```typescript
+type Immutable<T> = {
+  readonly [K in keyof T]: Immutable<T[K]>;
+};
+```
+
+
+
