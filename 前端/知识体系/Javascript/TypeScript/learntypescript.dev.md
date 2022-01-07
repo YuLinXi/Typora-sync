@@ -4,6 +4,72 @@
 
 
 
+## GENERIC TYPES 泛型
+
+标准泛型：`Array<T>`、`Promise<T>`、`Record<K,V>`
+
+### 泛型函数
+
+```typescript
+function someFunc<T1, T2, ...>(...) {
+ ...
+}
+
+const someVar = <T1, T2, ...>(...) => {
+ ...
+}
+```
+
+泛型站位符通用规范含义：
+
+- `T`：表示Type。
+- `S`：表示State
+- `E` ：表示Element
+- `K` ：表示Key
+- `V`：表示Value
+
+
+
+### 泛型接口
+
+```typescript
+interface InterfaceName<T1, T2, ...> {
+    ...
+}
+```
+
+
+
+### 泛型类型别名
+
+```typescript
+type TypeName<T1, T2, ...> = {
+ ...
+}
+```
+
+
+
+### 泛型类
+
+```typescript
+class ClassName<T1, T2, ...> {
+ ...
+}
+```
+
+
+
+### 泛型默认参数
+
+```typescript
+<T = DefaultType>
+```
+
+函数的泛型参数不是必须的，Typescript会根据传入的参数来自动推导类型。
+
+
+
 ## TYPE NARROWING 类型收窄
 
 一个变量可以从更少的精确类型到 **更精确** 的类型，这个过程叫做 **类型收窄**。
@@ -131,10 +197,6 @@ function assertTypeName(
      }
    }
    ```
-
-
-
-TODO：https://learntypescript.dev/07/l8-discriminated-union
 
 
 
