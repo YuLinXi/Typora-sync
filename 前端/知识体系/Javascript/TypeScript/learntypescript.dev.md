@@ -70,6 +70,88 @@ class ClassName<T1, T2, ...> {
 
 
 
+### 泛型参数约束
+
+```typescript
+<T extends ContrainingType>
+```
+
+多个泛型参数
+
+```typescript
+function getFieldValue<T, K extends keyof T>(
+  ...
+  fieldName: K
+) {
+  ...
+}
+```
+
+
+
+### 泛型rest（...）参数
+
+```typescript
+type NameAndThings<T extends unknown[]> = [name: string, ...things: T];
+```
+
+`things `被识别为一个元组类型。
+
+在函数中使用：
+
+```typescript
+function logThings<T extends unknown[]>(name: string, ...things: T) {
+  console.log(things);
+}
+```
+
+
+
+### 展开（ ...）泛型元组参数
+
+函数参数配合`...`可以达到类型收窄：
+
+```typescript
+function merge<Names extends string[], Scores extends number[]>(
+  names: Names,
+  scores: Scores
+) {
+  return [...names, ...scores];
+}
+let scores = merge(["Bill", "Jane"], [8, 9]);
+// 类型推导：let scores: ("string" | "number")[]
+```
+
+通过 `... T`展开操作符，可以进一步收窄返回类型：
+
+```typescript
+function merge<Names extends string[], Scores extends number[]>(
+  names: [...Names],
+  scores: [...Scores]
+) {
+  return [...names, ...scores];
+}
+let scores = merge(["Bill", "Jane"], [8, 9]);
+// 类型推导：let scores: ("Bill" | "Jane" | 8 | 9)[]
+```
+
+再进一步收窄返回类型：
+
+```typescript
+function merge<Names extends string[], Scores extends number[]>(
+  names: [...Names],
+  scores: [...Scores]
+): [...Names, ...Scores] {
+  return [...names, ...scores];
+}
+let scores = merge(["Bill", "Jane"], [8, 9]);
+// 类型推导：let scores: ["Bill", "Jane", 8, 9]
+```
+
+
+
+
+
 ## TYPE NARROWING 类型收窄
 
 一个变量可以从更少的精确类型到 **更精确** 的类型，这个过程叫做 **类型收窄**。
@@ -114,8 +196,6 @@ function double(item: string | number) {
   }
 }
 ```
-
-
 
 同样的还有，`instanceof` 、`in` 
 
