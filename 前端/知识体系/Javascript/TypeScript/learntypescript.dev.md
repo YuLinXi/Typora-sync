@@ -286,7 +286,7 @@ function assertTypeName(
 
 ### keyof
 
-使用 `keyof` 操作符从对象中提取类型注释。
+将一个类型映射为它所有成员名称的联合类型。
 
 ```typescript
 type ContactDetails = { name: string; email: string, mobile: string };
