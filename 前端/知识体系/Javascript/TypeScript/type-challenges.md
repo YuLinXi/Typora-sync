@@ -36,3 +36,5 @@ type Chainable<T extends {} = {}> = {
 }
 ```
 
+1. 链式调用关键返回`this`，所以`options`函数应该返回自身`Chainable`
+2. 这里设置一个`带默认值的泛型参数T`，用于与储存第一次调用后返回的类型
