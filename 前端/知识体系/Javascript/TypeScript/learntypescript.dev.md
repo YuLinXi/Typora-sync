@@ -76,7 +76,7 @@ class ClassName<T1, T2, ...> {
 <T extends ContrainingType>
 ```
 
-多个泛型参数
+多个泛型参数。
 
 ```typescript
 function getFieldValue<T, K extends keyof T>(
@@ -358,17 +358,68 @@ T1 extends T2 ? A : B
 
 
 
+联合类型判断
+
+```typescript
+type A = 'X';
+type B = 'X' | 'Y';
+type Y = A extends B ? true : false;
+// 返回 true
+```
+
+当`extends`左右都是联合类型时，
+
+```typescript
+type A = 'X' | 'Y';
+type B = 'X' | 'Y' | 'D';
+type Y = A extends B ? true : false;
+// 返回true
+// 比较相等于 ('X' extends 'X' | 'Y' | 'D') && ('Y' extends 'X' | 'Y' | 'D')
+```
+
+
+
+
+
+接口类型判断
+
+```typescript
+interface A {
+  a: string;
+}
+interface B {
+  a: string;
+  b: string;
+}
+type Y = B extends A ? true : false;
+// 返回true
+```
+
+当接口做判断时，判断A接口中每个`key`是否在`B`接口中实现。
+
+
+
 ### infer
 
 inferring types
 
-使用 `infer`  关键词可以将一个条件类型得判断类型放到一个变量中，这个变量可以被用在接下来的判断分支中。
+使用 `infer`  关键词可以将一个条件类型得判断类型放到一个变量中，这个变量可以被用在**紧接下来**的判断分支中。
 
 ```typescript
 type FunctionReturnType<T> = T extends (...args: any) => infer R ? R : T;
 ```
 
 含义：如果 T 是一个函数，并且返回类型推断为 R，则返回类型R，否则返回 T。
+
+
+
+infer推断字符串：
+
+```typescript
+type RestString<S extends string> = S extends `${infer first}${infer rest}` ? rest : S;
+type a = RestString<'abc'>;
+// 返回 'bc'
+```
 
 
 
