@@ -38,3 +38,20 @@ type Chainable<T extends {} = {}> = {
 
 1. 链式调用关键返回`this`，所以`options`函数应该返回自身`Chainable`
 2. 这里设置一个`带默认值的泛型参数T`，用于与储存第一次调用后返回的类型
+
+
+
+#### [Permutation 元祖排列组合](https://github.com/type-challenges/type-challenges/issues/5934)
+
+```typescript
+type Permutation<T, U = T> = 
+  [T] extends [never]
+   ? [] 
+   : T extends U 
+    ? [T, ...Permutation<Exclude<U, T>>]
+    : [];
+```
+
+1. 首先`T extends U ` ，`extends`左右两则都为元祖类型，左侧将元祖挨个遍历与又边做比较。
+2. 配合递归实现排列组合。
+
