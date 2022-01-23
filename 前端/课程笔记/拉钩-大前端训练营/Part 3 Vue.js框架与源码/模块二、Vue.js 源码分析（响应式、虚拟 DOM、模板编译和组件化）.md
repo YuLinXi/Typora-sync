@@ -19,7 +19,7 @@ resolve: {
         vue$: 'vue/dist/vue.runtime.esm.js'
     } 
 }
-注：其中$为精确匹配的意
+注：其中$为精确匹配的意思
 ```
 
 ## 源码分析
