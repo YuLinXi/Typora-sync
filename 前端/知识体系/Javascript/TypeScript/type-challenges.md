@@ -1,3 +1,5 @@
+[题解](https://ghaiklor.github.io/type-challenges-solutions/en/)
+
 #### [深度Readonly](https://github.com/type-challenges/type-challenges/issues/5855)
 
 ```typescript
