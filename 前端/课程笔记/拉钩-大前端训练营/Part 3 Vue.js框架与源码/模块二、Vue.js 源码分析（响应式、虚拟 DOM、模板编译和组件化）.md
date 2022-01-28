@@ -22,6 +22,8 @@ resolve: {
 注：其中$为精确匹配的意思
 ```
 
+
+
 ## 源码分析
 
 ### 入口文件
@@ -31,6 +33,7 @@ web平台，完整版入口文件：entry-runtime-with-compiler.js
 `el`不能是`body`或`html`标签  
 `render`函数优先级高于`template`，且最终都转化为`render`  
 `如果有render`，则直接调用`mount`挂载DOM  
+
 
 
 ### 数组响应式原理
@@ -55,7 +58,7 @@ web平台，完整版入口文件：entry-runtime-with-compiler.js
 
 调用方法优先级
 
-Promise.then > MutatuibIvserver > setImmediate（IE、Node）> setTimeout
+Promise.then > MutationObserver > setImmediate（IE、Node）> setTimeout
 
 一些需要注意点：
 

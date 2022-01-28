@@ -4,6 +4,14 @@
 
 
 
+## CREATING TYPES 创建类型
+
+### 创建枚举
+
+
+
+
+
 ## GENERIC TYPES 泛型
 
 标准泛型：`Array<T>`、`Promise<T>`、`Record<K,V>`

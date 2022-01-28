@@ -57,3 +57,5 @@ type Permutation<T, U = T> =
 1. 首先`T extends U ` ，`extends`左右两则都为元祖类型，左侧将元祖挨个遍历与又边做比较。
 2. 配合递归实现排列组合。
 
+
+
