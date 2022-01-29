@@ -8,7 +8,293 @@
 
 ### 创建枚举
 
+#### 数字枚举
 
+枚举值从0开始自增。
+
+```typescript
+enum Level {
+  High,
+  Medium,
+  Low
+};
+Level.High   // 0
+Level.Medium // 1
+```
+
+
+
+#### 字符串枚举
+
+每个Key都应该赋值。
+
+```typescript
+enum Level {
+  High = "H",
+  Medium = "M",
+  Low = 'L',
+}
+```
+
+
+
+### 创建类型别名
+
+类型别名是一个 **指向其它类型** 的名称。
+
+类型别名可以被用于 **类型注解**。
+
+```typescript
+type TypeAliasName = ExistingType;
+```
+
+
+
+#### 函数类型别名
+
+```typescript
+type TypeAliasName = (paramName1: paramType1, ...) => ReturnType;
+```
+
+
+
+#### 对象类型别名
+
+```typescript
+type Score = { name: string; score: number }
+```
+
+
+
+### 创建接口
+
+
+
+#### 扩展接口
+
+```typescript
+interface InterfaceA extends InterfaceB {
+ ...
+}
+```
+
+
+
+#### 函数类型接口
+
+```typescript
+interface TypeName {
+   (paramName1: paramType1, ...): ReturnType;
+}
+```
+
+
+
+#### 合并声明
+
+`typescript`  运行多个**相同名称标识**的接口定义存在，`ts`会自动对其进行合并。
+
+如果具备相同属性名称，则会出现类型错误提示，避免重复。
+
+此类机制适用于 **扩展第三方库内置接口**。
+
+```typescript
+interface ButtonProps {
+  id: string;
+}
+
+interface ButtonProps {
+  text: string;
+  onClick?: () => void;
+}
+
+const button: ButtonProps = {
+  text: "123",
+  id: "1"
+};
+```
+
+
+
+### 创建联合类型
+
+
+
+#### 字符串字面量联合类型
+
+```typescript
+type Fruit = "Banana" | "Apple" | "Pear";
+```
+
+
+
+#### 对象联合类型
+
+```typescript
+type Actions = { type: "loading" } | { type: "loaded"; data: { name: string } };
+```
+
+
+
+### 创建交叉类型
+
+和联合类型相似，结合已存在的类型通过 `&` 构造出一个新的类型。
+
+联合类型包含基于我们所参与构建的类型中的 **所有成员**。
+
+
+
+#### 交叉类型中的相同成员
+
+如果相同成员的类型不可兼容，则其最终类型以  `never `呈现。
+
+如果可以兼容，则该成员类型为其 **交集**。
+
+```typescript
+type A = {
+  fn: (a: string) => void;
+  b: string
+};
+type B = {
+  fn: (a: string, b: string) => void;
+  b: number
+};
+type C = A & B;
+let c: C = {
+  fn: (a: string) => {}             // type right
+  fn: (a: string, b: string) => {}  // type error
+
+  b: '111'                          // type error
+  b: 111                            // type error
+}
+```
+
+
+
+注：如果最终该成员的类型为 `never`，则这个交叉类型为无用类型，无法使用。
+
+
+
+### type 对比 interface 
+
+
+
+#### 原始类型
+
+type 可以申明，interface 不能。
+
+```typescript
+type Name = string;
+```
+
+
+
+#### 数组类型
+
+type 可以申明，interface 也可以，但是推荐使用 **type**。
+
+```typescript
+type Names = string[];
+interface Names {
+  [index: number]: string;
+}
+```
+
+
+
+#### 元祖
+
+只有 type 可以申明。
+
+```typescript
+type Point = [number, number];
+```
+
+
+
+#### 函数类型
+
+type 可以申明，interface 也可以，但是推荐使用 **type**。
+
+
+
+#### 联合类型
+
+只有 type 可以申明。
+
+```typescript
+type Status = "pending" | "working" | "complete";
+```
+
+
+
+#### 对象类型
+
+两者都可以，没有优劣。
+
+
+
+#### 组合类型
+
+type 使用  `&`，interface 使用 `extends`，两者皆可。
+
+
+
+#### 三方库
+
+由于`type` 并不会自动进行同名类型合并，因此使用 `interface` 用于扩展三方库的类型接口尤为有效。
+
+
+
+### 类型兼容
+
+
+
+#### 基础类型兼容
+
+```typescript
+let jones: "Tom" | "Bob" = "Tom";
+let jane: string = "Jane";
+jane = jones;   // type right
+jones = jane;   // type error
+```
+
+以上代码`jones`可以赋值给  `jane`，因为 `jane`为 `string` 类型，而`jones`的类型为字符串的子集，是被`string`兼容的。
+
+而反之，`jones`的类型没法兼容`jane`的类型。
+
+
+
+#### 对象兼容
+
+对象类型是否兼容，需要判断 **每个成员的类型都兼容**。
+
+```typescript
+type Dog = {
+  name: string;
+};
+type Shape = {
+  name: "Circle" | "Square";
+};
+let ben: Dog = {
+  name: "Ben",
+};
+let circle: Shape = {
+  name: "Circle",
+};
+ben = circle;   // type right
+circle = ben;   // type error
+```
+
+
+
+
+
+#### 函数兼容
+
+函数兼容分别判断 **参数** 与 **返回值** 。
+
+函数根据对应位置的参数类型进行判断，参数名称并不重要。
 
 
 
@@ -384,8 +670,6 @@ type Y = A extends B ? true : false;
 // 返回true
 // 比较相等于 ('X' extends 'X' | 'Y' | 'D') && ('Y' extends 'X' | 'Y' | 'D')
 ```
-
-
 
 
 

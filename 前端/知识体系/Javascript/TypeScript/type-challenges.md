@@ -59,3 +59,31 @@ type Permutation<T, U = T> =
 
 
 
+#### [IsNever](https://github.com/type-challenges/type-challenges/blob/master/questions/1042-medium-isnever/README.md)
+
+```typescript
+type IsNever<T extends unknown> = [T] extends [never] ? true : false;
+```
+
+1. 关键在于如果要判断参数是否为 `never`  本身，需要使用 `[T] extends [never]` 来判断。
+
+
+
+#### [IsUnion](https://github.com/type-challenges/type-challenges/blob/master/questions/1097-medium-isunion/README.md)
+
+```typescript
+type IsUnion<T, U = T> = T extends U ? [U] extends [T] ? false : true : never
+```
+
+1. 联合类型的分发特性，当联合类型作为泛型的时候，会触发分发特性。
+
+2. 当 联合类型用 [ ] 包装以后,会失去分发特性。
+
+3. 如果不为联合类型，通过以上判断始终是相等的。例如：
+
+   ```typescript
+   type a = string extends string ? [string] extends [string] ? false : true : never
+   // a 始终为 false;
+   ```
+
+   
