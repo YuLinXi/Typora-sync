@@ -1,0 +1,40 @@
+# dependencies
+node_modules
+/shared-deps/node_modules
+
+/npm-debug.log*
+/yarn-error.log
+/package-lock.json
+
+# production
+/dist
+/output
+
+# log
+/log
+
+# misc
+.idea
+
+# ide
+.eslintcache
+
+# other
+*.zip
+*.tar.gz
+jenkins.js
+nginx.template
+# Dockerfile
+/coverage
+.DS_Store
+.DS_Store
+.DS_Store
+
+/src/output
+
+.vscode
+
+vendor
+*.lock
+
+

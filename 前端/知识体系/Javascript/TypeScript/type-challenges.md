@@ -67,7 +67,7 @@ type IsNever<T extends unknown> = [T] extends [never] ? true : false;
 
 1. 关键在于如果要判断参数是否为 `never`  本身，需要使用 `[T] extends [never]` 来判断。
 
-
+   
 
 #### [IsUnion](https://github.com/type-challenges/type-challenges/blob/master/questions/1097-medium-isunion/README.md)
 
