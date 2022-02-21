@@ -2,8 +2,6 @@
 
 [参考]（https://learntypescript.dev/）
 
-
-
 ## CREATING TYPES 创建类型
 
 ### 创建枚举
@@ -22,8 +20,6 @@ Level.High   // 0
 Level.Medium // 1
 ```
 
-
-
 #### 字符串枚举
 
 每个Key都应该赋值。
@@ -36,8 +32,6 @@ enum Level {
 }
 ```
 
-
-
 ### 创建类型别名
 
 类型别名是一个 **指向其它类型** 的名称。
@@ -48,15 +42,11 @@ enum Level {
 type TypeAliasName = ExistingType;
 ```
 
-
-
 #### 函数类型别名
 
 ```typescript
 type TypeAliasName = (paramName1: paramType1, ...) => ReturnType;
 ```
-
-
 
 #### 对象类型别名
 
@@ -64,11 +54,7 @@ type TypeAliasName = (paramName1: paramType1, ...) => ReturnType;
 type Score = { name: string; score: number }
 ```
 
-
-
 ### 创建接口
-
-
 
 #### 扩展接口
 
@@ -78,8 +64,6 @@ interface InterfaceA extends InterfaceB {
 }
 ```
 
-
-
 #### 函数类型接口
 
 ```typescript
@@ -87,8 +71,6 @@ interface TypeName {
    (paramName1: paramType1, ...): ReturnType;
 }
 ```
-
-
 
 #### 合并声明
 
@@ -114,11 +96,7 @@ const button: ButtonProps = {
 };
 ```
 
-
-
 ### 创建联合类型
-
-
 
 #### 字符串字面量联合类型
 
@@ -126,23 +104,17 @@ const button: ButtonProps = {
 type Fruit = "Banana" | "Apple" | "Pear";
 ```
 
-
-
 #### 对象联合类型
 
 ```typescript
 type Actions = { type: "loading" } | { type: "loaded"; data: { name: string } };
 ```
 
-
-
 ### 创建交叉类型
 
 和联合类型相似，结合已存在的类型通过 `&` 构造出一个新的类型。
 
 联合类型包含基于我们所参与构建的类型中的 **所有成员**。
-
-
 
 #### 交叉类型中的相同成员
 
@@ -169,15 +141,9 @@ let c: C = {
 }
 ```
 
-
-
 注：如果最终该成员的类型为 `never`，则这个交叉类型为无用类型，无法使用。
 
-
-
-### type 对比 interface 
-
-
+### type 对比 interface
 
 #### 原始类型
 
@@ -186,8 +152,6 @@ type 可以申明，interface 不能。
 ```typescript
 type Name = string;
 ```
-
-
 
 #### 数组类型
 
@@ -200,8 +164,6 @@ interface Names {
 }
 ```
 
-
-
 #### 元祖
 
 只有 type 可以申明。
@@ -210,13 +172,9 @@ interface Names {
 type Point = [number, number];
 ```
 
-
-
 #### 函数类型
 
 type 可以申明，interface 也可以，但是推荐使用 **type**。
-
-
 
 #### 联合类型
 
@@ -226,29 +184,19 @@ type 可以申明，interface 也可以，但是推荐使用 **type**。
 type Status = "pending" | "working" | "complete";
 ```
 
-
-
 #### 对象类型
 
 两者都可以，没有优劣。
-
-
 
 #### 组合类型
 
 type 使用  `&`，interface 使用 `extends`，两者皆可。
 
-
-
 #### 三方库
 
 由于`type` 并不会自动进行同名类型合并，因此使用 `interface` 用于扩展三方库的类型接口尤为有效。
 
-
-
 ### 类型兼容
-
-
 
 #### 基础类型兼容
 
@@ -262,8 +210,6 @@ jones = jane;   // type error
 以上代码`jones`可以赋值给  `jane`，因为 `jane`为 `string` 类型，而`jones`的类型为字符串的子集，是被`string`兼容的。
 
 而反之，`jones`的类型没法兼容`jane`的类型。
-
-
 
 #### 对象兼容
 
@@ -286,17 +232,11 @@ ben = circle;   // type right
 circle = ben;   // type error
 ```
 
-
-
-
-
 #### 函数兼容
 
 函数兼容分别判断 **参数** 与 **返回值** 。
 
 函数根据对应位置的参数类型进行判断，参数名称并不重要。
-
-
 
 ## GENERIC TYPES 泛型
 
@@ -322,8 +262,6 @@ const someVar = <T1, T2, ...>(...) => {
 - `K` ：表示Key
 - `V`：表示Value
 
-
-
 ### 泛型接口
 
 ```typescript
@@ -331,8 +269,6 @@ interface InterfaceName<T1, T2, ...> {
     ...
 }
 ```
-
-
 
 ### 泛型类型别名
 
@@ -342,8 +278,6 @@ type TypeName<T1, T2, ...> = {
 }
 ```
 
-
-
 ### 泛型类
 
 ```typescript
@@ -352,8 +286,6 @@ class ClassName<T1, T2, ...> {
 }
 ```
 
-
-
 ### 泛型默认参数
 
 ```typescript
@@ -361,8 +293,6 @@ class ClassName<T1, T2, ...> {
 ```
 
 函数的泛型参数不是必须的，Typescript会根据传入的参数来自动推导类型。
-
-
 
 ### 泛型参数约束
 
@@ -381,8 +311,6 @@ function getFieldValue<T, K extends keyof T>(
 }
 ```
 
-
-
 ### 泛型rest（...）参数
 
 ```typescript
@@ -398,8 +326,6 @@ function logThings<T extends unknown[]>(name: string, ...things: T) {
   console.log(things);
 }
 ```
-
-
 
 ### 展开（ ...）泛型元组参数
 
@@ -442,15 +368,9 @@ let scores = merge(["Bill", "Jane"], [8, 9]);
 // 类型推导：let scores: ["Bill", "Jane", 8, 9]
 ```
 
-
-
-
-
 ## TYPE NARROWING 类型收窄
 
 一个变量可以从更少的精确类型到 **更精确** 的类型，这个过程叫做 **类型收窄**。
-
-
 
 ### 类型断言
 
@@ -462,9 +382,7 @@ const button = <HTMLButtonElement>document.querySelector(".go");
 const button = document.querySelector(".go") as HTMLButtonElement;
 ```
 
-
-
-### `!`  non-null 非空断言 
+### `!`  non-null 非空断言
 
 在严格模式下，typesctipy 会默认开启 `strictNullChecks`检查模式。
 
@@ -472,8 +390,6 @@ const button = document.querySelector(".go") as HTMLButtonElement;
 text!.concat(text!)
 // 告诉typesctipyt obj 非`null`或`undefined`
 ```
-
-
 
 ### type guard  类型守卫
 
@@ -493,8 +409,6 @@ function double(item: string | number) {
 
 同样的还有，`instanceof` 、`in` 
 
-
-
 #### type predicate 类型谓词
 
 使用类型谓词实现一个自定义类型守卫函数。
@@ -508,8 +422,6 @@ function isPerson(contact: Contact): contact is Person {
   return (contact as Person).firstName !== undefined;
 }
 ```
-
-
 
 #### assertion signature 断言签名
 
@@ -529,8 +441,6 @@ function assertTypeName(
 }
 ```
 
-
-
 ### discriminated union pattern 可辨识联合匹配
 
 **可辨识联合匹配**，可以用于收窄联合类型的方式。
@@ -538,7 +448,7 @@ function assertTypeName(
 三个关键部分：
 
 1. 多个类型含有**一个公共属性**。
-
+   
    ```typescript
    type Type1 = {
      ...
@@ -552,13 +462,13 @@ function assertTypeName(
    ```
 
 2. 如果一个类型是这**多个类型的联合类型**
-
+   
    ```typescript
    type UnionType = Type1 | ... | TypeN
    ```
 
 3. 通过这个公共属性来创造类型守卫。
-
+   
    ```typescript
    function (param: UnionType) {
      switch (param.commonName) {
@@ -572,11 +482,7 @@ function assertTypeName(
    }
    ```
 
-
-
 ## MAPPED TYPES 映射类型
-
-
 
 ### keyof
 
@@ -589,8 +495,6 @@ let keys: keyof ContactDetails = 'name';
 // keys === 'name' | 'email' | 'mobile'
 ```
 
-
-
 ### 创建一个映射类型
 
 映射类型是一个从已存在类型的类型信息创建一个新的类型的过程。
@@ -599,8 +503,6 @@ let keys: keyof ContactDetails = 'name';
 // 映射类型含义伪代码
 type MappedTypeName = { [K in UnionType]: ExistingType };
 ```
-
-
 
 ### `-` 符号
 
@@ -628,17 +530,11 @@ type Required<T> = {
 };
 ```
 
-
-
 ### typeof
-
-
-
-
 
 ## CONDITIONAL TYPES 条件类型
 
-### extends 
+### extends
 
 条件类型变换类型到一个新的类型。
 
@@ -650,9 +546,7 @@ T1 extends T2 ? A : B
 
 条件类型在 **泛型** 类型上非常有用。
 
-
-
-联合类型判断
+#### 联合类型判断
 
 ```typescript
 type A = 'X';
@@ -671,9 +565,19 @@ type Y = A extends B ? true : false;
 // 比较相等于 ('X' extends 'X' | 'Y' | 'D') && ('Y' extends 'X' | 'Y' | 'D')
 ```
 
+特殊的联合类型：`boolean`：
+
+`boolean`参与条件判断时，会被视为`true | false`的联合类型
+
+```typescript
+type Y<T> = T extends true ? 1 : 2;
+type X = Y<boolean>;
+// x 为 1 | 2
+```
 
 
-接口类型判断
+
+#### 接口类型判断
 
 ```typescript
 interface A {
@@ -689,6 +593,16 @@ type Y = B extends A ? true : false;
 
 当接口做判断时，判断A接口中每个`key`是否在`B`接口中实现。
 
+#### any
+
+当`any` 作为条件左边的值，那么该条件会将`trueType`和`falseType`结果合并成联合类型返回。
+
+```typescript
+type Y<T> = T extends true ? 1 : 2;
+type X = Y<any>;
+// x 为 1 | 2
+```
+
 
 
 ### infer
@@ -703,8 +617,6 @@ type FunctionReturnType<T> = T extends (...args: any) => infer R ? R : T;
 
 含义：如果 T 是一个函数，并且返回类型推断为 R，则返回类型R，否则返回 T。
 
-
-
 infer推断字符串：
 
 ```typescript
@@ -712,8 +624,6 @@ type RestString<S extends string> = S extends `${infer first}${infer rest}` ? re
 type a = RestString<'abc'>;
 // 返回 'bc'
 ```
-
-
 
 联合类型参与条件判断
 
@@ -730,8 +640,6 @@ type ContactKeys = RemoveFromUnion<keyof typeof person, "age">;
 含义：`typeof person` 类型的所有`key` 中，排除 `age`。
 
 联合类型中的每个类型都会进行一次分支判断。
-
-
 
 `pick` 类型模拟：
 
@@ -751,11 +659,7 @@ type ObjectWithoutKeys<T, K extends keyof T> = ObjectWithKeys<
 >;
 ```
 
-
-
 ## IMMUTABLE TYPES 不可变类型
-
-
 
 ### Readonly
 
@@ -767,19 +671,13 @@ type ReadonlyType = Readonly<ExistingType>;
 
 注：只为对象属性进行浅映射（*shallow* readonly check）
 
-
-
 ### Object.freeze
 
 使用 `Object.freeze` 包装的数据，TS会自动推到并为其使用 `Readonly ` 映射。
 
-
-
 ### Deeply Immutable
 
 深度不可变类型
-
-
 
 #### 使用 const 断言
 
@@ -792,8 +690,6 @@ let variableName = someValue as const;
 2. 应用到对象而言，使用 `const` 断言会为对象的每个属性 **递归地** 添加`readonly` 修饰符。
 
 3. 当`readonly`修饰符应用到数据类型，数组类型将被修复为固定元素的 **元祖** 类型。
-
-
 
 #### deepFreeze 函数
 
@@ -813,15 +709,10 @@ function deepFreeze<T>(obj: T) {
 }
 ```
 
-
-
-#### 	DeepImmutable 类型
+#### DeepImmutable 类型
 
 ```typescript
 type Immutable<T> = {
   readonly [K in keyof T]: Immutable<T[K]>;
 };
 ```
-
-
-
