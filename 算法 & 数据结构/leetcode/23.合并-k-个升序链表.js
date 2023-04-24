@@ -16,9 +16,18 @@
  * @param {ListNode[]} lists
  * @return {ListNode}
  */
+
+class MinHeap {
+  constructor() {
+    this.heap = []
+  }
+  swap(l1, l2) {
+    
+  }
+}
+
 var mergeKLists = function (lists) {
   var dummy = new ListNode()
   var p = dummy
-  
 }
 // @lc code=end
