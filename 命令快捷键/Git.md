@@ -16,6 +16,11 @@ git branch -u --set-upstream-to=origin/<branch-name>
 git rebase -i HEAD~2
 ```
 
+#### 把当前未提交代码合并到最近一次提交记录中
+```
+git commit --amend --no-edit
+```
+
 #### 清除版本控制缓存
 ```
 git rm -r --cached .
