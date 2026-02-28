@@ -1,0 +1,15 @@
+name: Generate README
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Generate README-AI
+        uses: zerotox/readme-ai-action@v1
+        with:
+          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
