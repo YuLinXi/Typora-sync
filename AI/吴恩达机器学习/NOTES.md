@@ -80,3 +80,49 @@ $$\underset{w,b}{\text{minimize }} J(w,b)$$
  
 ### 可视化代价函数
 
+### 阶梯下降
+
+#### 公式 
+
+$$w = w - \alpha \frac{\partial}{\partial w} J(w, b)$$  
+$$b = b - \alpha \frac{\partial}{\partial b} J(w, b)$$  
+
+阶梯算法需要同时更新参数w、b
+
+$\alpha $ ：学习率 (Learning rate)，介于0 ～ 1 之间的一个正数，**控制你向下迈步的大小**。  
+
+$\frac{\partial}{\partial w} J(w, b)$：代价函数J的导数项（Derivative)，**告诉你往哪个方向走**。
+
+重复以上公式的更新步骤，直到算法**收敛**。  
+**收敛**：达到一个局部最小值点，此时每迈出一步，参数w和b不再有太大变化。  
+
+#### 更新过程：
+
+<img src="./assets/img2.png"/>
+
+#### 学习率
+
+学习率 $\alpha$ 的选择对梯度下降实现的效率有巨大影响。
+
+学习率过小：可以正常工作但效率极低。  
+学习率过大：梯度下降可能无法收敛甚至发散，无法工作。
+
+#### 线性回归的梯度下降
+
+线形回归模型函数：$f_{w,b}(x) = wx + b$   
+
+代价函数：$J(w,b) = \frac{1}{2m} \sum_{i=1}^{m} (f_{w,b}(x^{(i)}) - y^{(i)})^2$
+
+梯度下降公式：$w = w - \alpha \frac{\partial}{\partial w} J(w, b)$、 $b = b - \alpha \frac{\partial}{\partial b} J(w, b)$
+
+线性回归的`导数`部分，通过微积分推导：
+
+$\frac{\partial}{\partial w} J(w, b)$   $\longrightarrow$   $\frac{1}{m} \sum_{i=1}^{m} (f_{w,b}(x^{(i)}) - y^{(i)})x^{(i)}$   
+
+$\frac{\partial}{\partial b} J(w, b)$   $\longrightarrow$   $\frac{1}{m} \sum_{i=1}^{m} (f_{w,b}(x^{(i)}) - y^{(i)})$  
+
+线形回归算法的梯度下降公式：
+
+$w = w - \alpha \frac{1}{m} \sum_{i=1}^{m} (f_{w,b}(x^{(i)}) - y^{(i)})x^{(i)}$   
+
+$b = b - \alpha \frac{1}{m} \sum_{i=1}^{m} (f_{w,b}(x^{(i)}) - y^{(i)})$
