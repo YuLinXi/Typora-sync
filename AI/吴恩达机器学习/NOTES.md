@@ -85,8 +85,11 @@ $$\underset{w,b}{\text{minimize }} J(w,b)$$
 
 #### 公式 
 
-$$w = w - \alpha \frac{\partial}{\partial w} J(w, b)$$  
-$$b = b - \alpha \frac{\partial}{\partial b} J(w, b)$$  
+$$w = w - \alpha \frac{\partial}{\partial w} J(w, b)$$
+ 
+
+$$b = b - \alpha \frac{\partial}{\partial b} J(w, b)$$
+
 
 阶梯算法需要同时更新参数w、b
 
