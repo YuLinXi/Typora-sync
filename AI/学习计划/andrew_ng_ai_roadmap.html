@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>吴恩达 AI 全栈学习路径</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #f5f5f7;
+  --surface: #ffffff;
+  --surface2: #eef0f5;
+  --border: rgba(0,0,0,0.10);
+  --border-hover: rgba(0,0,0,0.22);
+  --text: #1a1a2e;
+  --text-muted: #555570;
+  --text-dim: #8888a0;
+
+  --c1: #9d8fff;   /* purple */
+  --c1-dim: rgba(157,143,255,0.15);
+  --c1-mid: rgba(157,143,255,0.35);
+  --c2: #5ba3f5;   /* blue */
+  --c2-dim: rgba(91,163,245,0.15);
+  --c2-mid: rgba(91,163,245,0.35);
+  --c3: #2ec99e;   /* teal */
+  --c3-dim: rgba(46,201,158,0.15);
+  --c3-mid: rgba(46,201,158,0.35);
+  --c4: #f5a623;   /* amber */
+  --c4-dim: rgba(245,166,35,0.15);
+  --c4-mid: rgba(245,166,35,0.35);
+  --c5: #f07050;   /* coral */
+  --c5-dim: rgba(240,112,80,0.15);
+  --c5-mid: rgba(240,112,80,0.35);
+  --c6: #888;      /* gray */
+  --c6-dim: rgba(136,136,136,0.15);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans SC', sans-serif;
+  font-weight: 300;
+  line-height: 1.7;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Grid noise background ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(0,0,0,0.04) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(0,0,0,0.04) 40px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 60px 24px 100px;
+}
+
+/* ── Header ── */
+header {
+  margin-bottom: 64px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.7s ease forwards;
+}
+
+.header-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(32px, 6vw, 52px);
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+h1 em {
+  font-style: italic;
+  color: var(--c1);
+}
+
+.header-sub {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 520px;
+  line-height: 1.8;
+}
+
+.header-stats {
+  display: flex;
+  gap: 24px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.stat-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* ── Filter bar ── */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 0.7s ease 0.2s forwards;
+}
+
+.filter-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 0.5px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.filter-btn:hover {
+  border-color: var(--border-hover);
+  color: var(--text);
+}
+
+.filter-btn.active {
+  background: var(--surface2);
+  border-color: var(--border-hover);
+  color: var(--text);
+}
+
+/* ── Stage section ── */
+.stage {
+  margin-bottom: 48px;
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.stage.visible {
+  animation: fadeUp 0.6s ease forwards;
+}
+
+.stage-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.stage-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.stage-line {
+  flex: 1;
+  height: 0.5px;
+  background: var(--border);
+}
+
+.stage-badge {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.05em;
+}
+
+.stage-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+
+.stage-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-family: 'DM Mono', monospace;
+}
+
+/* ── Course card ── */
+.course-card {
+  display: block;
+  text-decoration: none;
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 8px;
+  transition: border-color 0.25s, background 0.25s, transform 0.2s;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.course-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.course-card:hover {
+  border-color: var(--border-hover);
+  background: var(--surface2);
+  transform: translateX(3px);
+}
+
+.course-card:hover::before { opacity: 1; }
+
+.card-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.card-index {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.card-body { flex: 1; min-width: 0; }
+
+.card-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.4;
+  margin-bottom: 5px;
+}
+
+.card-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.card-tags {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 0.5px solid;
+  letter-spacing: 0.04em;
+}
+
+.card-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.type-badge {
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.arrow-icon {
+  font-size: 14px;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: all 0.2s;
+  color: var(--text-muted);
+}
+
+.course-card:hover .arrow-icon {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Stage color theming */
+.s1 .course-card::before { background: linear-gradient(90deg, var(--c1), transparent); }
+.s1 .card-index { background: var(--c1-dim); color: var(--c1); }
+.s1 .type-badge.spec { background: var(--c1-dim); color: var(--c1); border: 0.5px solid rgba(157,143,255,0.2); }
+.s1 .stage-badge { background: var(--c1-dim); color: var(--c1); border: 0.5px solid rgba(157,143,255,0.2); }
+.s1 .tag { color: var(--c1); border-color: rgba(157,143,255,0.2); background: var(--c1-dim); }
+
+.s2 .course-card::before { background: linear-gradient(90deg, var(--c2), transparent); }
+.s2 .card-index { background: var(--c2-dim); color: var(--c2); }
+.s2 .type-badge.spec { background: var(--c2-dim); color: var(--c2); border: 0.5px solid rgba(91,163,245,0.2); }
+.s2 .type-badge.short { background: var(--c2-dim); color: var(--c2); border: 0.5px solid rgba(91,163,245,0.2); }
+.s2 .stage-badge { background: var(--c2-dim); color: var(--c2); border: 0.5px solid rgba(91,163,245,0.2); }
+.s2 .tag { color: var(--c2); border-color: rgba(91,163,245,0.2); background: var(--c2-dim); }
+
+.s3 .course-card::before { background: linear-gradient(90deg, var(--c3), transparent); }
+.s3 .card-index { background: var(--c3-dim); color: var(--c3); }
+.s3 .type-badge.short { background: var(--c3-dim); color: var(--c3); border: 0.5px solid rgba(46,201,158,0.2); }
+.s3 .stage-badge { background: var(--c3-dim); color: var(--c3); border: 0.5px solid rgba(46,201,158,0.2); }
+.s3 .tag { color: var(--c3); border-color: rgba(46,201,158,0.2); background: var(--c3-dim); }
+
+.s4 .course-card::before { background: linear-gradient(90deg, var(--c4), transparent); }
+.s4 .card-index { background: var(--c4-dim); color: var(--c4); }
+.s4 .type-badge.short { background: var(--c4-dim); color: var(--c4); border: 0.5px solid rgba(245,166,35,0.2); }
+.s4 .stage-badge { background: var(--c4-dim); color: var(--c4); border: 0.5px solid rgba(245,166,35,0.2); }
+.s4 .tag { color: var(--c4); border-color: rgba(245,166,35,0.2); background: var(--c4-dim); }
+
+.s5 .course-card::before { background: linear-gradient(90deg, var(--c5), transparent); }
+.s5 .card-index { background: var(--c5-dim); color: var(--c5); }
+.s5 .type-badge.spec { background: var(--c5-dim); color: var(--c5); border: 0.5px solid rgba(240,112,80,0.2); }
+.s5 .type-badge.short { background: var(--c5-dim); color: var(--c5); border: 0.5px solid rgba(240,112,80,0.2); }
+.s5 .stage-badge { background: var(--c5-dim); color: var(--c5); border: 0.5px solid rgba(240,112,80,0.2); }
+.s5 .tag { color: var(--c5); border-color: rgba(240,112,80,0.2); background: var(--c5-dim); }
+
+.s6 .course-card::before { background: linear-gradient(90deg, var(--c6), transparent); }
+.s6 .card-index { background: var(--c6-dim); color: var(--c6); }
+.s6 .type-badge.new { background: rgba(136,136,136,0.1); color: #aaa; border: 0.5px solid rgba(136,136,136,0.2); }
+.s6 .stage-badge { background: var(--c6-dim); color: var(--c6); border: 0.5px solid rgba(136,136,136,0.2); }
+.s6 .tag { color: #888; border-color: rgba(136,136,136,0.2); background: var(--c6-dim); }
+
+/* ── Connector arrow between stages ── */
+.connector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 0 20px 4px;
+  opacity: 0.4;
+}
+
+.connector-line {
+  width: 0.5px;
+  height: 28px;
+  background: var(--border-hover);
+  margin-left: 12px;
+}
+
+.connector-label {
+  font-size: 12px;
+  font-family: 'DM Mono', monospace;
+  font-weight: 700;
+  color: #000000;
+  letter-spacing: 0.1em;
+  margin-left: 6px;
+}
+
+/* ── Progress indicator ── */
+.progress-track {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 48px;
+  opacity: 0;
+  animation: fadeUp 0.7s ease 0.1s forwards;
+}
+
+.prog-dot {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.prog-dot.d1 { background: var(--c1-mid); }
+.prog-dot.d2 { background: var(--c2-mid); }
+.prog-dot.d3 { background: var(--c3-mid); }
+.prog-dot.d4 { background: var(--c4-mid); }
+.prog-dot.d5 { background: var(--c5-mid); }
+
+/* ── Footer ── */
+footer {
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 0.5px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.footer-note {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-family: 'DM Mono', monospace;
+  line-height: 1.8;
+}
+
+.footer-link {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-family: 'DM Mono', monospace;
+  border-bottom: 0.5px solid var(--border);
+  padding-bottom: 1px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.footer-link:hover {
+  color: var(--text-muted);
+  border-color: var(--border-hover);
+}
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Hidden state for filter ── */
+.stage.hidden {
+  display: none;
+}
+
+/* ── Tooltip on hover ── */
+.course-card[data-platform]:hover::after {
+  content: '↗ 点击前往 ' attr(data-platform);
+  position: absolute;
+  bottom: 10px;
+  right: 14px;
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 560px) {
+  .card-right { display: none; }
+  h1 { font-size: 28px; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="header-tag">// Andrew Ng · DeepLearning.AI · 全栈学习图谱</div>
+    <h1>从零到 <em>Agent</em><br>系统化 AI 工程师路径</h1>
+    <p class="header-sub">精选 14 门课程，覆盖数学底座 → 大模型应用 → RAG 工具链 → Agent 代理工程 → 生产落地，每门课均附官方链接。</p>
+    <div class="header-stats">
+      <div class="stat"><span class="stat-num">14</span><span class="stat-label">门课程</span></div>
+      <div class="stat"><span class="stat-num">5</span><span class="stat-label">个阶段</span></div>
+      <div class="stat"><span class="stat-num">3</span><span class="stat-label">专项 · 11 短课</span></div>
+    </div>
+  </header>
+
+  <div class="progress-track">
+    <div class="prog-dot d1" onclick="filterStage(1)" title="阶段一"></div>
+    <div class="prog-dot d2" onclick="filterStage(2)" title="阶段二"></div>
+    <div class="prog-dot d3" onclick="filterStage(3)" title="阶段三"></div>
+    <div class="prog-dot d4" onclick="filterStage(4)" title="阶段四"></div>
+    <div class="prog-dot d5" onclick="filterStage(5)" title="阶段五"></div>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterAll(this)">全部</button>
+    <button class="filter-btn" onclick="filterType('spec', this)">专项课程</button>
+    <button class="filter-btn" onclick="filterType('short', this)">短课程（免费）</button>
+    <button class="filter-btn" onclick="filterPlatform('Coursera', this)">Coursera</button>
+    <button class="filter-btn" onclick="filterPlatform('DeepLearning.AI', this)">DeepLearning.AI</button>
+  </div>
+
+
+  <!-- ═══════════ STAGE 1 ═══════════ -->
+  <div class="stage s1 visible" data-stage="1" data-type="spec" style="animation-delay:0.3s">
+    <div class="stage-head">
+      <span class="stage-num">STAGE 01</span>
+      <div class="stage-line"></div>
+      <span class="stage-badge">数学与算法底座</span>
+    </div>
+
+    <a class="course-card" href="https://www.coursera.org/specializations/machine-learning-introduction" target="_blank" data-platform="Coursera">
+      <div class="card-inner">
+        <div class="card-index">01</div>
+        <div class="card-body">
+          <div class="card-title">Machine Learning Specialization</div>
+          <div class="card-meta">吴恩达 · Coursera 专项课程（3 门）· 约 2 个月</div>
+          <div class="card-tags">
+            <span class="tag">监督学习</span>
+            <span class="tag">梯度下降</span>
+            <span class="tag">神经网络基础</span>
+            <span class="tag">损失函数</span>
+          </div>
+        </div>
+        <div class="card-right">
+          <span class="type-badge spec">专项课程</span>
+          <span class="arrow-icon">→</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="course-card" href="https://www.deeplearning.ai/courses/deep-learning-specialization/" target="_blank" data-platform="DeepLearning.AI">
+      <div class="card-inner">
+        <div class="card-index">02</div>
+        <div class="card-body">
+          <div class="card-title">Deep Learning Specialization</div>
+          <div class="card-meta">吴恩达 · DeepLearning.AI / Coursera（5 门）· 约 3 个月</div>
+          <div class="card-tags">
+            <span class="tag">CNN 视觉</span>
+            <span class="tag">RNN / LSTM</span>
+            <span class="tag">Transformer</span>
+            <span class="tag">反向传播</span>
+          </div>
+        </div>
+        <div class="card-right">
+          <span class="type-badge spec">专项课程</span>
+          <span class="arrow-icon">→</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="connector">
+    <div class="connector-line"></div>
+    <span class="connector-label">掌握 Transformer 架构后进入下一阶段</span>
+  </div>
+
+  <!-- ═══════════ STAGE 2 ═══════════ -->
+  <div class="stage s2" data-stage="2" style="animation-delay:0.1s">
+    <div class="stage-head">
+      <span class="stage-num">STAGE 02</span>
+      <div class="stage-line"></div>
+      <span class="stage-badge">大模型应用开发</span>
+    </div>
+
+    <a class="course-card" href="https://www.deeplearning.ai/courses/generative-ai-with-llms/" target="_blank" data-platform="Coursera">
+      <div class="card-inner">
+        <div class="card-index">03</div>
+        <div class="card-body">
+          <div class="card-title">Generative AI with Large Language Models</div>
+          <div class="card-meta">DeepLearning.AI × AWS · Coursera · 约 3 周</div>
+          <div class="card-tags">
+            <span class="tag">Fine-tuning</span>
+            <span class="tag">RLHF</span>
+            <span class="tag">PEFT</span>
+            <span class="tag">LLM 生命周期</span>
+          </div>
+        </div>
+        <div class="card-right">
+          <span class="type-badge spec">专项课程</span>
+          <span class="arrow-icon">→</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="course-card" href="https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/" target="_blank" data-platform="DeepLearning.AI">
+      <div class="card-inner">
+        <div class="card-index">04</div>
+        <div class="card-body">
+          <div class="card-title">ChatGPT Prompt Engineering for Developers</div>
+          <div class="card-meta">DeepLearning.AI × OpenAI · 短课程 · 约 1 小时</div>
+          <div class="card-tags">
+            <span class="tag">Prompt 工程</span>
+            <span class="tag">系统化方法</span>
+            <span class="tag">迭代优化</span>
+          </div>
+        </div>
+        <div class="card-right">
+          <span class="type-badge short">免费短课</span>
+          <span class="arrow-icon">→</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="connector">
+    <div class="connector-line"></div>
+    <span class="connector-label">学会使用 LLM API 后进入工具链阶段</span>
+  </div>
+
+  <!-- ═══════════ STAGE 3 ═══════════ -->
+  <div class="stage s3" data-stage="3" style="animation-delay:0.1s">
+    <div class="stage-head">
+      <span class="stage-num">STAGE 03</span>
+      <div class="stage-line"></div>
+      <span class="stage-badge">RAG 与工具链</span>
+    </div>
+
+    <a class="course-card" href="https://www.deeplearning.ai/short-courses/langchain-for-llm-application-development/" target="_blank" data-platform="DeepLearning.AI">
+      <div class="card-inner">
+        <div class="card-index">05</div>
+        <div class="card-body">
+          <div class="card-title">LangChain for LLM Application Development</div>
+          <div class="card-meta">DeepLearning.AI × LangChain · 短课程 · 约 1 小时</div>
+          <div class="card-tags">
+            <span class="tag">Chain</span>
+            <span class="tag">Memory</span>
+            <span class="tag">Tools</span>
+            <span class="tag">Agents 入门</span>
+          </div>
+        </div>
+        <div class="card-right">
+          <span class="type-badge short">免费短课</span>
+          <span class="arrow-icon">→</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="course-card" href="https://www.deeplearning.ai/short-courses/langchain-chat-with-your-data/" target="_blank" data-platform="DeepLearning.AI">
+      <div class="card-inner">
+        <div class="card-index">06</div>
+        <div class="card-body">
+          <div class="card-title">LangChain: Chat with Your Data</div>
+          <div class="card-meta">DeepLearning.AI × LangChain · 短课程 · 约 1.5 小时</div>
+          <div class="card-tags">
+            <span class="tag">RAG 流程</span>
+            <span class="tag">文档加载</span>
+            <span class="tag">向量检索</span>
+            <span class="tag">对话问答</span>
+          </div>
+        </div>
+        <div class="card-right">
+          <span class="type-badge short">免费短课</span>
+          <span class="arrow-icon">→</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="course-card" href="https://www.deeplearning.ai/short-courses/building-systems-with-chatgpt/" target="_blank" data-platform="DeepLearning.AI">
+      <div class="card-inner">
+        <div class="card-index">07</div>
+        <div class="card-body">
+          <div class="card-title">Building Systems with the ChatGPT API</div>
+          <div class="card-meta">DeepLearning.AI × OpenAI · 短课程 · 约 1 小时</div>
+          <div class="card-tags">
+            <span class="tag">多步骤 Pipeline</span>
+            <span class="tag">安全检查</span>
+            <span class="tag">链式 Prompt</span>
+          </div>
+        </div>
+        <div class="card-right">
+          <span class="type-badge short">免费短课</span>
+          <span class="arrow-icon">→</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="course-card" href="https://www.deeplearning.ai/short-courses/building-evaluating-advanced-rag/" target="_blank" data-platform="DeepLearning.AI">
+      <div class="card-inner">
+        <div class="card-index">08</div>
+        <div class="card-body">
+          <div class="card-title">Building and Evaluating Advanced RAG</div>
+          <div class="card-meta">DeepLearning.AI × LlamaIndex × TruEra · 短课程 · 约 1 小时</div>
+          <div class="card-tags">
+            <span class="tag">向量数据库</span>
+            <span class="tag">语义检索</span>
+            <span class="tag">Ragas 评估</span>
+            <span class="tag">Chroma / Pinecone</span>
+          </div>
+        </div>
+        <div class="card-right">
+          <span class="type-badge short">免费短课</span>
+          <span class="arrow-icon">→</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="connector">
+    <div class="connector-line"></div>
+    <span class="connector-label">RAG 系统搭建完成后进入 Agent 阶段</span>
+  </div>
+
+  <!-- ═══════════ STAGE 4 ═══════════ -->
+  <div class="stage s4" data-stage="4" style="animation-delay:0.1s">
+    <div class="stage-head">
+      <span class="stage-num">STAGE 04</span>
+      <div class="stage-line"></div>
+      <span class="stage-badge">Agent 代理工程</span>
+    </div>
+
+    <a class="course-card" href="https://www.deeplearning.ai/courses/agentic-ai/" target="_blank" data-platform="DeepLearning.AI">
+      <div class="card-inner">
+        <div class="card-index">09</div>
+        <div class="card-body">
+          <div class="card-title">Agentic AI with Andrew Ng <span style="font-size:10px;color:var(--c4);margin-left:4px;">★ 推荐先修</span></div>
+          <div class="card-meta">DeepLearning.AI · 吴恩达亲授 · 2025 新课</div>
+          <div class="card-tags">
+            <span class="tag">Reflection</span>
+            <span class="tag">Tool Use</span>
+            <span class="tag">Planning</span>
+            <span class="tag">Multi-agent</span>
+          </div>
+        </div>
+        <div class="card-right">
+          <span class="type-badge short">免费短课</span>
+          <span class="arrow-icon">→</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="course-card" href="https://www.deeplearning.ai/short-courses/ai-agentic-design-patterns-with-autogen/" target="_blank" data-platform="DeepLearning.AI">
+      <div class="card-inner">
+        <div class="card-index">10</div>
+        <div class="card-body">
+          <div class="card-title">AI Agentic Design Patterns with AutoGen</div>
+          <div class="card-meta">DeepLearning.AI × Microsoft · 短课程 · 约 1 小时</div>
+          <div class="card-tags">
+            <span class="tag">多智能体协作</span>
+            <span class="tag">对话模式</span>
+            <span class="tag">ConversableAgent</span>
+          </div>
+        </div>
+        <div class="card-right">
+          <span class="type-badge short">免费短课</span>
+          <span class="arrow-icon">→</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="course-card" href="https://www.deeplearning.ai/short-courses/multi-ai-agent-systems-with-crewai/" target="_blank" data-platform="DeepLearning.AI">
+      <div class="card-inner">
+        <div class="card-index">11</div>
+        <div class="card-body">
+          <div class="card-title">Multi AI Agent Systems with crewAI</div>
+          <div class="card-meta">DeepLearning.AI × crewAI · 短课程 · 约 1 小时</div>
+          <div class="card-tags">
+            <span class="tag">角色扮演</span>
+            <span class="tag">任务分解</span>
+            <span class="tag">团队编排</span>
+          </div>
+        </div>
+        <div class="card-right">
+          <span class="type-badge short">免费短课</span>
+          <span class="arrow-icon">→</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="course-card" href="https://www.deeplearning.ai/short-courses/building-agentic-rag-with-llamaindex/" target="_blank" data-platform="DeepLearning.AI">
+      <div class="card-inner">
+        <div class="card-index">12</div>
+        <div class="card-body">
+          <div class="card-title">Building Agentic RAG with LlamaIndex</div>
+          <div class="card-meta">DeepLearning.AI × LlamaIndex · 短课程 · 约 1 小时</div>
+          <div class="card-tags">
+            <span class="tag">Router Agent</span>
+            <span class="tag">多文档决策</span>
+            <span class="tag">Agentic RAG</span>
+          </div>
+        </div>
+        <div class="card-right">
+          <span class="type-badge short">免费短课</span>
+          <span class="arrow-icon">→</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="connector">
+    <div class="connector-line"></div>
+    <span class="connector-label">Agent 系统构建后进入工程化落地</span>
+  </div>
+
+  <!-- ═══════════ STAGE 5 ═══════════ -->
+  <div class="stage s5" data-stage="5" style="animation-delay:0.1s">
+    <div class="stage-head">
+      <span class="stage-num">STAGE 05</span>
+      <div class="stage-line"></div>
+      <span class="stage-badge">工程化与落地</span>
+    </div>
+
+    <a class="course-card" href="https://www.deeplearning.ai/courses/machine-learning-engineering-for-production-mlops/" target="_blank" data-platform="DeepLearning.AI">
+      <div class="card-inner">
+        <div class="card-index">13</div>
+        <div class="card-body">
+          <div class="card-title">Machine Learning Engineering for Production (MLOps)</div>
+          <div class="card-meta">DeepLearning.AI / Coursera 专项（4 门）· 约 3 个月</div>
+          <div class="card-tags">
+            <span class="tag">生产部署</span>
+            <span class="tag">监控告警</span>
+            <span class="tag">数据漂移</span>
+            <span class="tag">CI/CD Pipeline</span>
+          </div>
+        </div>
+        <div class="card-right">
+          <span class="type-badge spec">专项课程</span>
+          <span class="arrow-icon">→</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="course-card" href="https://www.deeplearning.ai/short-courses/quality-and-safety-for-llm-applications/" target="_blank" data-platform="DeepLearning.AI">
+      <div class="card-inner">
+        <div class="card-index">14</div>
+        <div class="card-body">
+          <div class="card-title">Quality and Safety for LLM Applications</div>
+          <div class="card-meta">DeepLearning.AI × WhyLabs · 短课程 · 约 1 小时</div>
+          <div class="card-tags">
+            <span class="tag">输出质量评估</span>
+            <span class="tag">安全性检测</span>
+            <span class="tag">幻觉治理</span>
+          </div>
+        </div>
+        <div class="card-right">
+          <span class="type-badge short">免费短课</span>
+          <span class="arrow-icon">→</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <footer>
+    <div class="footer-note">
+      专项课程需 Coursera 订阅或单次付费 · 短课程在 DeepLearning.AI 平台免费访问<br>
+      课程链接均为官方页面，内容可能随平台更新调整
+    </div>
+    <a class="footer-link" href="https://www.deeplearning.ai/courses/" target="_blank">→ 浏览全部课程</a>
+  </footer>
+
+</div>
+
+<script>
+// ── Intersection Observer for stage animations ──
+const stages = document.querySelectorAll('.stage');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+
+stages.forEach(s => observer.observe(s));
+
+// ── Filter functions ──
+function filterAll(btn) {
+  setActiveBtn(btn);
+  stages.forEach(s => {
+    s.classList.remove('hidden');
+    const c = s.nextElementSibling;
+    if (c && c.classList.contains('connector')) c.style.display = '';
+  });
+}
+
+function filterType(type, btn) {
+  setActiveBtn(btn);
+  stages.forEach(s => {
+    const cards = s.querySelectorAll('.course-card');
+    let hasMatch = false;
+    cards.forEach(c => {
+      const badge = c.querySelector('.type-badge');
+      if (badge && badge.classList.contains(type)) hasMatch = true;
+    });
+    s.classList.toggle('hidden', !hasMatch);
+    const conn = s.nextElementSibling;
+    if (conn && conn.classList.contains('connector')) conn.style.display = hasMatch ? '' : 'none';
+  });
+}
+
+function filterPlatform(platform, btn) {
+  setActiveBtn(btn);
+  stages.forEach(s => {
+    const cards = s.querySelectorAll('.course-card');
+    let hasMatch = false;
+    cards.forEach(c => {
+      if (c.dataset.platform === platform) hasMatch = true;
+    });
+    s.classList.toggle('hidden', !hasMatch);
+    const conn = s.nextElementSibling;
+    if (conn && conn.classList.contains('connector')) conn.style.display = hasMatch ? '' : 'none';
+  });
+}
+
+function filterStage(num) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  stages.forEach(s => {
+    const sNum = parseInt(s.dataset.stage);
+    s.classList.toggle('hidden', sNum !== num);
+    const conn = s.nextElementSibling;
+    if (conn && conn.classList.contains('connector')) conn.style.display = 'none';
+  });
+}
+
+function setActiveBtn(btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── Keyboard shortcut: press 1-5 to jump to stage ──
+document.addEventListener('keydown', e => {
+  if (e.key >= '1' && e.key <= '5') {
+    const stageEl = document.querySelector(`.stage[data-stage="${e.key}"]`);
+    if (stageEl) stageEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  if (e.key === 'a' || e.key === 'A') {
+    filterAll(document.querySelector('.filter-btn'));
+  }
+});
+</script>
+
+</body>
+</html>
